@@ -111,7 +111,7 @@ const CreateRoomDetails: NextPage = () => {
 							options={[
 								{ key: RoomType.SINGLE, content: 'Single' },
 								{ key: RoomType.DOUBLE, content: 'Double' },
-								{ key: RoomType.PRESDENTIAL, content: 'Presidential' },
+								{ key: RoomType.PRESIDENTIAL, content: 'Presidential' },
 							]}
 						/>
 						<FormikFormField

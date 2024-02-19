@@ -3,7 +3,7 @@ import {RoomType} from "@prisma/client";
 
 export const CreateRoomInput = z.object({
     pricePerDay: z.number().positive(),
-    type: z.enum([RoomType.DOUBLE,RoomType.SINGLE,RoomType.PRESDENTIAL]),
+    type: z.enum([RoomType.DOUBLE,RoomType.SINGLE,RoomType.PRESIDENTIAL]),
     name: z.string(),
     description: z.string(),
     floor: z.number().positive(),
