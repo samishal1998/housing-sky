@@ -39,7 +39,7 @@ export const FormField = ({
 					cols={cols}
 					value={value}
 					{...inputProps}
-					className={twMerge("px-3 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:leading-6", error && "focus:ring-red-600 ring-red-300")}
+					className={twMerge("px-3 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:leading-6 outline-0", error && "focus:ring-red-600 ring-red-300")}
 				/>
 				<div className={'pl-2 text-red-500'}>
 					{error}
