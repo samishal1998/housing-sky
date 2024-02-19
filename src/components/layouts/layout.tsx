@@ -132,12 +132,19 @@ const Layout = ({
 							</DropdownMenuContent>
 						</DropdownMenu>
 					) : (
+						<div className={'grid grid-cols-1 md:grid-cols-2 gap-2'}>
+						<Button
+							className={'rounded-full'}
+							variant={'outline'} asChild>
+							<Link href={routes.HotelRegistration.generatePath()}>Join Our Hotels</Link>
+						</Button>
 						<Button
 							className={'rounded-full'}
 							variant={'outline'}
 							onClick={() => signIn()}>
 							Sign In <ArrowRight />
 						</Button>
+						</div>
 					)}
 				</div>
 			</nav>

@@ -1,6 +1,6 @@
 import {signIn, useSession} from 'next-auth/react';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import {useEffect, useMemo} from 'react';
 import { api } from '~/utils/api';
 import { useFormik } from 'formik';
 import { z } from 'zod';
@@ -11,6 +11,8 @@ import {Button} from "~/components/ui/button";
 import {toast} from "sonner";
 import {routes} from "~/routes/router";
 import Link from "next/link";
+import {useSearchParams} from "next/navigation";
+import {LucideMessageCircleWarning, ShieldAlertIcon} from "lucide-react";
 
 const SignInFormSchema = z.object({
     email: z.string().email(),
@@ -38,9 +40,7 @@ export default function RegistrationPage() {
         validationSchema: toFormikValidationSchema(SignInFormSchema),
         async onSubmit(values) {
             try {
-                await signIn("credentials",values)
-                toast('Signed In Successfully', { important: true });
-
+                await signIn("credentials",values,)
             } catch (e) {
                 console.log(e);
                 toast('Failed to SignIn', { important: true });
@@ -71,6 +71,11 @@ export default function RegistrationPage() {
 
                 <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
                     <form className="space-y-5">
+                        {
+                            router.query.error && <div className={'rounded-xl p-3 flex flex-row justify-start bg-destructive/30 items-center'}>
+                                <ShieldAlertIcon strokeWidth={2} className={'text-red-700 w-6 h-6'}/> <span className={'w-full text-center font-medium text-sm text-neutral-600'}>Sing In Failed, Please Check Yor Credentials</span>
+                            </div>
+                        }
 
                         <FormField
                             label={'Email address'}
