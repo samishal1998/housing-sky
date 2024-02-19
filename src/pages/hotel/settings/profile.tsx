@@ -63,7 +63,7 @@ export default function HotelRegistration() {
 						<FormikProvider value={form}>
 							<form className="space-y-5">
 								<AvatarFormField
-									value={form.values.image ?? getPublicImageUrlFromPath(hotelQuery.data.id)}
+									value={form.values.image ?? hotelQuery.data.id}
 									fallbackName={hotelQuery.data.name}
 									onChange={async (file: File)=>{
 										await form.setFieldValue('image',file)
