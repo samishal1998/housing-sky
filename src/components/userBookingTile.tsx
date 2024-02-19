@@ -1,4 +1,4 @@
-import { Booking, BookingStatus } from '.prisma/client';
+import { type Booking } from '.prisma/client';
 import * as React from 'react';
 import { useCallback, useMemo } from 'react';
 import { Button } from '~/components/ui/button';
@@ -16,30 +16,27 @@ export function UserBookingTile({ booking }: { booking: Booking }) {
 	const cancelBookingMut = api.guest.bookings.cancel.useMutation();
 	const queryClient = useQueryClient();
 
-	const handleUpdateBookingStatus = useCallback(
-		async () => {
-			try {
-				await cancelBookingMut.mutateAsync({
-					cancelReason: '',
-					bookingId: booking.id,
-				});
+	const handleUpdateBookingStatus = useCallback(async () => {
+		try {
+			await cancelBookingMut.mutateAsync({
+				cancelReason: '',
+				bookingId: booking.id,
+			});
 
-				await queryClient.invalidateQueries();
-				toast('Updated Booking Successfully', { important: true });
-			} catch (e) {
-				console.log(e);
-				toast('Failed to Update Booking', { important: true });
-			}
-		},
-		[cancelBookingMut],
-	);
+			await queryClient.invalidateQueries();
+			toast('Updated Booking Successfully', { important: true });
+		} catch (e) {
+			console.log(e);
+			toast('Failed to Update Booking', { important: true });
+		}
+	}, [booking.id, cancelBookingMut, queryClient]);
 
 	return (
 		<div
 			className={
 				'flex w-full flex-col items-end gap-2 rounded-2xl bg-white p-5 shadow-md ring-1 ring-neutral-300'
 			}>
-			<div className={'grid w-full grid-cols-1 md:grid-cols-3 justify-center  gap-3 '}>
+			<div className={'grid w-full grid-cols-1 justify-center gap-3  md:grid-cols-3 '}>
 				<div className={'flex flex-col'}>
 					<div className={'flex flex-row gap-2'}>
 						<h1 className={'text-xl font-medium'}>{room?.name}</h1>
@@ -71,7 +68,7 @@ export function UserBookingTile({ booking }: { booking: Booking }) {
 			{(booking.status === 'PENDING_RESPONSE' || booking.status === 'ACCEPTED') && (
 				<div className={'grid grid-cols-1 justify-items-end gap-2 '}>
 					<Button
-						className={cn('text-destructive ring-destructive ring-1')}
+						className={cn('text-destructive ring-1 ring-destructive')}
 						color={'red'}
 						variant={'outline'}
 						size={'sm'}

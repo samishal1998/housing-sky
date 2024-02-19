@@ -6,6 +6,7 @@ export type FileImageProps = { source:File|string|Blob } & React.ImgHTMLAttribut
 
 export function FileImage(props: FileImageProps) {
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [imgProps, setImgProps, updateImgProps] = useUpdateReducer<any>({...props});
 
     useEffect(() => {
@@ -25,8 +26,9 @@ export function FileImage(props: FileImageProps) {
             }
         }
 
-    }, [props])
+    }, [props, updateImgProps])
 	return (
+        // eslint-disable-next-line @next/next/no-img-element
         <img alt={"image"} onError={() => updateImgProps({src: '/assets/logo-unavailable.svg'})} {...imgProps}/>
     );
 }

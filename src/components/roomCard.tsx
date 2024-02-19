@@ -1,20 +1,25 @@
-import {Room} from '@prisma/client';
-import {getPublicImageUrlFromPath} from '~/utils/storage-helpers';
-import {cn} from '~/utils';
-import {routes} from '~/routes/router';
-import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,} from '~/components/ui/dropdown-menu';
+import { type Room } from '@prisma/client';
+import { getPublicImageUrlFromPath } from '~/utils/storage-helpers';
+import { cn } from '~/utils';
+import { routes } from '~/routes/router';
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from '~/components/ui/dropdown-menu';
 import Link from 'next/link';
-import {Button} from '~/components/ui/button';
+import Image from 'next/image';
+import { Button } from '~/components/ui/button';
 import { MoreVerticalIcon, PencilIcon, TrashIcon } from 'lucide-react';
-import {api} from "~/utils/api";
-import {LoadingButton} from "~/components/loadingButton";
-import {fileToBase64} from "~/utils/fileToBase64";
-import {toast} from "sonner";
-import {useQueryClient} from "@tanstack/react-query";
+import { api } from '~/utils/api';
+import { LoadingButton } from '~/components/loadingButton';
+import { toast } from 'sonner';
+import { useQueryClient } from '@tanstack/react-query';
 
 export function RoomCard({ room, showControls }: { room: Room; showControls?: boolean }) {
-	const archiveRoomMutation = api.hotels.rooms.archive.useMutation()
-	const queryClient = useQueryClient()
+	const archiveRoomMutation = api.hotels.rooms.archive.useMutation();
+	const queryClient = useQueryClient();
 	return (
 		<>
 			<a
@@ -23,8 +28,8 @@ export function RoomCard({ room, showControls }: { room: Room; showControls?: bo
 				}
 				href={routes.RoomDetails.generatePath(room)}>
 				{room.images[0] && (
-					<img
-						className={cn('w-[95%] aspect-square mx-auto rounded-2xl object-cover')}
+					<Image
+						className={cn('mx-auto aspect-square w-[95%] rounded-2xl object-cover')}
 						src={getPublicImageUrlFromPath(room.images[0])}
 						alt={`${room.name}-image`}
 					/>
@@ -56,16 +61,23 @@ export function RoomCard({ room, showControls }: { room: Room; showControls?: bo
 									</Link>
 								</DropdownMenuItem>
 								<DropdownMenuItem disabled={archiveRoomMutation.isLoading} asChild>
-									<LoadingButton className={'text-foreground'} loading={archiveRoomMutation.isLoading} onClick={async ()=>{
-										try {
-											await archiveRoomMutation.mutateAsync({roomId:room.id})
-											await queryClient.invalidateQueries()
-											toast('Deleted Room Successfully', { important: true });
-										} catch (e) {
-											console.log(e);
-											toast('Failed to Delete Room', { important: true });
-										}
-									}}>
+									<LoadingButton
+										className={'text-foreground'}
+										loading={archiveRoomMutation.isLoading}
+										onClick={async () => {
+											try {
+												await archiveRoomMutation.mutateAsync({
+													roomId: room.id,
+												});
+												await queryClient.invalidateQueries();
+												toast('Deleted Room Successfully', {
+													important: true,
+												});
+											} catch (e) {
+												console.log(e);
+												toast('Failed to Delete Room', { important: true });
+											}
+										}}>
 										<TrashIcon /> Delete Room
 									</LoadingButton>
 								</DropdownMenuItem>

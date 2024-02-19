@@ -7,12 +7,12 @@ import { z } from 'zod';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
 import { LoadingButton } from '~/components/loadingButton';
 import { FormField } from '~/components/forms/formField';
-
 import {CreateUserInput} from "~/server/api/routers/user/dtos/createUserInput";
 import {Button} from "~/components/ui/button";
 import {toast} from "sonner";
 import Link from "next/link";
 import { routes } from '~/routes/router';
+import Image from "next/image";
 
 const CreateUserFormSchema = CreateUserInput.extend({
 	repeatPassword: z.string(),
@@ -31,7 +31,7 @@ export default function RegistrationPage() {
 				alert("Couldn't redirect");
 			});
 		}
-	}, [session.status]);
+	}, [router, session.status]);
 	const form = useFormik<CreateUserFormValues>({
 		initialValues: {
 			email: '',
@@ -40,7 +40,7 @@ export default function RegistrationPage() {
 			repeatPassword: '',
 		},
 		validationSchema: toFormikValidationSchema(CreateUserFormSchema),
-		async onSubmit(values, helpers) {
+		async onSubmit(values) {
 
 			try {
 				await createUserMutation.mutateAsync(values);
@@ -63,7 +63,7 @@ export default function RegistrationPage() {
 		<>
 			<div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
 				<Link href='/' className="block sm:mx-auto sm:w-full sm:max-w-sm">
-					<img
+					<Image
 						className="mx-auto h-40 w-auto"
 						src="/housing-sky-logo.svg"
 						alt="Housing Sky"

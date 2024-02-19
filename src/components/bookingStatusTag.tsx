@@ -1,4 +1,4 @@
-import {BookingStatus} from '.prisma/client';
+import {type BookingStatus} from '.prisma/client';
 import {Badge} from '~/components/ui/badge';
 import * as React from 'react';
 

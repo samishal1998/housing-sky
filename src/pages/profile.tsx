@@ -1,40 +1,34 @@
 import { api } from '~/utils/api';
 import { z } from 'zod';
-import { useRouter } from 'next/router';
-import { signIn, useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { FormikProvider, useFormik } from 'formik';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
 import { FormikFormField } from '~/components/forms/formField';
 import { toast } from 'sonner';
 import { Button } from '~/components/ui/button';
 import { LoadingButton } from '~/components/loadingButton';
-import { FormikTextAreaField } from '~/components/forms/formTextAreaField';
-import Link from 'next/link';
-import { routes } from '~/routes/router';
-import { UpdateHotelInput } from '~/server/api/routers/hotel/dtos/updateHotelInput';
 import Layout from '~/components/layouts/layout';
 import { CircularProgress } from '~/components/circularProgress';
-import { getPublicImageUrlFromPath } from '~/utils/storage-helpers';
-import {PencilIcon, XCircle} from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
 import * as React from 'react';
-import { bindFileInputElement, useFileInput } from '~/hooks/useFileInput';
-import { FileImage } from '~/components/forms/file-image';
-import {fileToBase64} from "~/utils/fileToBase64";
-import {useMemo} from "react";
-import {AvatarFormField} from "~/components/forms/avatarFormField";
+import { useMemo } from 'react';
+import { fileToBase64 } from '~/utils/fileToBase64';
+import { AvatarFormField } from '~/components/forms/avatarFormField';
 
-const UpdateHotelFormSchema = z.object({
-    name:z.string().optional(),
-    email:z.string().email().optional(),
-    password:z.string().optional(),
-    repeatPassword:z.string().optional(),
-    image: z.any().optional(),
-}).refine((schema) => schema.password === schema.repeatPassword, { path: ['repeatPassword'],message:"Passwords Don't Match" });
+const UpdateHotelFormSchema = z
+	.object({
+		name: z.string().optional(),
+		email: z.string().email().optional(),
+		password: z.string().optional(),
+		repeatPassword: z.string().optional(),
+		image: z.any().optional(),
+	})
+	.refine((schema) => schema.password === schema.repeatPassword, {
+		path: ['repeatPassword'],
+		message: "Passwords Don't Match",
+	});
 
 type UpdateHotelFormValues = z.infer<typeof UpdateHotelFormSchema>;
 export default function HotelRegistration() {
-    const router = useRouter();
     const session = useSession();
     const userQuery = api.users.get.useQuery();
     const user = useMemo(()=>userQuery.data?.user,[userQuery])
@@ -47,7 +41,7 @@ export default function HotelRegistration() {
             image:undefined,
         },
         validationSchema: toFormikValidationSchema(UpdateHotelFormSchema),
-        async onSubmit(values, helpers) {
+        async onSubmit(values) {
             try {
                 let image: string |undefined = undefined;
 

@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
-import {XCircle} from "lucide-react";
-import {FileImage, fileImageKey} from "~/components/forms/file-image";
+import { useRef } from 'react';
+import { XCircle } from 'lucide-react';
+import { FileImage, fileImageKey } from '~/components/forms/file-image';
 
-export type BasicChangeEvent = { target: { value:any } };
+export type BasicChangeEvent = { target: { value: any } };
 export type BasicChangeEventHandler = (event: BasicChangeEvent) => void;
 
 export function FormPhotoField({

@@ -1,4 +1,4 @@
-import {initializeApp, cert, App} from 'firebase-admin/app';
+import {initializeApp, cert, type App} from 'firebase-admin/app';
 import { getStorage } from 'firebase-admin/storage';
 import serviceAccount from '~/../config/housing-sky-firebase-adminsdk-lg130-296b0c1d13.json';
 

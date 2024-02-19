@@ -1,6 +1,5 @@
 import { api } from '~/utils/api';
 import { z } from 'zod';
-import { useRouter } from 'next/router';
 import { signIn, useSession } from 'next-auth/react';
 import { FormikProvider, useFormik } from 'formik';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
@@ -11,6 +10,7 @@ import { Button } from '~/components/ui/button';
 import { LoadingButton } from '~/components/loadingButton';
 import { FormikTextAreaField } from '~/components/forms/formTextAreaField';
 import Link from 'next/link';
+import Image from 'next/image';
 import { routes } from '~/routes/router';
 
 const RegisterHotelFormSchema = RegisterHotelInput.extend({
@@ -18,17 +18,8 @@ const RegisterHotelFormSchema = RegisterHotelInput.extend({
 }).refine((schema) => schema.password === schema.repeatPassword, { path: ['repeatPassword'],message:"Passwords Don't Match" });
 type RegisterHotelFormValues = z.infer<typeof RegisterHotelFormSchema>;
 export default function HotelRegistration() {
-	const router = useRouter();
 	const session = useSession();
 	const registerHotelMutation = api.hotels.register.useMutation();
-
-	// useEffect(() => {
-	// 	if (session.status === 'unauthenticated') {
-	// 		router.replace('/').catch(() => {
-	// 			alert("Couldn't redirect");
-	// 		});
-	// 	}
-	// }, [session.status]);
 
 	const form = useFormik<RegisterHotelFormValues>({
 		initialValues: {
@@ -40,7 +31,7 @@ export default function HotelRegistration() {
 			repeatPassword: '',
 		},
 		validationSchema: toFormikValidationSchema(RegisterHotelFormSchema),
-		async onSubmit(values, helpers) {
+		async onSubmit(values) {
 			try {
 				await registerHotelMutation.mutateAsync(values);
 				toast('Registered Successfully', { important: true });
@@ -62,7 +53,7 @@ export default function HotelRegistration() {
 		<>
 			<div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
 				<Link href="/" className="block sm:mx-auto sm:w-full sm:max-w-sm">
-					<img
+					<Image
 						className="mx-auto h-40 w-auto"
 						src="/housing-sky-logo.svg"
 						alt="Housing Sky"

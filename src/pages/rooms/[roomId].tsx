@@ -1,32 +1,30 @@
-import { GetServerSideProps, NextPage } from 'next';
+import { type NextPage } from 'next';
 import { api } from '~/utils/api';
 import { useRouter } from 'next/router';
-import { z } from 'zod';
-import {signIn, useSession} from 'next-auth/react';
-import { createContext, useEffect, useMemo } from 'react';
+import { type z } from 'zod';
+import { signIn, useSession } from 'next-auth/react';
+import * as React from 'react';
+import { useMemo } from 'react';
 import { FormikProvider, useFormik } from 'formik';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
 import { toast } from 'sonner';
-import { FormikFormField } from '~/components/forms/formField';
-import { FormikTextAreaField } from '~/components/forms/formTextAreaField';
 import { Button } from '~/components/ui/button';
 import { LoadingButton } from '~/components/loadingButton';
 import { DatePickerWithRange } from '~/components/ui/date-range-picker';
-import { Matcher } from 'react-day-picker';
+import { type Matcher } from 'react-day-picker';
 import { differenceInDays } from 'date-fns';
 import { CreateBookingInput } from '~/server/api/routers/guest/dtos/createBookingInput';
 import { checkIfDateRangeOverlapsMatchers } from '~/utils/dates';
 import { AlertTriangleIcon } from 'lucide-react';
-import * as React from 'react';
 import Layout from '~/components/layouts/layout';
 import ReactFullscreenSlideshow from 'react-fullscreen-slideshow';
 import { getPublicImageUrlFromPath } from '~/utils/storage-helpers';
 import { CircularProgress } from '~/components/circularProgress';
-import { Room } from '@prisma/client';
-import { Booking } from '.prisma/client';
+import { type Room } from '@prisma/client';
+import { type Booking } from '.prisma/client';
 import { routes } from '~/routes/router';
-import {Skeleton} from "~/components/ui/skeleton";
-import {Avatar, AvatarFallback, AvatarImage} from "~/components/ui/avatar";
+import { Skeleton } from '~/components/ui/skeleton';
+import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
 
 const CreateBookingFormSchema = CreateBookingInput;
 type CreateBookingFormValues = Partial<
@@ -39,7 +37,6 @@ type CreateBookingFormValues = Partial<
 const RoomDetails: NextPage = () => {
 	const router = useRouter();
 	const query = router.query;
-	const session = useSession();
 	const roomBookedDatesQuery = api.rooms.getRoomWithBookedDates.useQuery({
 		roomId: query.roomId as string,
 	});
@@ -112,7 +109,7 @@ const BookRoomForm = ({ room }: { room: Room & { bookings: Booking[] } }) => {
 			days: 0,
 		},
 		validationSchema: toFormikValidationSchema(CreateBookingFormSchema),
-		async onSubmit(values, helpers) {
+		async onSubmit(values) {
 			if(session.status === 'unauthenticated'){
 				await signIn()
 				return;
@@ -137,7 +134,13 @@ const BookRoomForm = ({ room }: { room: Room & { bookings: Booking[] } }) => {
 					);
 					return;
 				}
-				await bookRoomMutation.mutateAsync(values as any);
+				await bookRoomMutation.mutateAsync({
+					roomId: values.roomId!,
+					days: values.days!,
+					endDate: values.endDate!,
+					startDate: values.startDate!,
+					totalPrice: values.totalPrice!,
+				});
 				toast('Booked Room Successfully', { important: true });
 				setTimeout(() => {
 					router.replace(routes.GuestBookings.generatePath()).catch(console.error);
@@ -180,7 +183,7 @@ const BookRoomForm = ({ room }: { room: Room & { bookings: Booking[] } }) => {
 						}}
 					/>
 
-					<div className={'grid w-fit grid-cols-2 gap-3 w-full'}>
+					<div className={'grid grid-cols-2 gap-3 w-full'}>
 						<p
 							className={
 								'odd:font-bold even:text-right even:font-medium even:text-neutral-600'

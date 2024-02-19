@@ -1,6 +1,5 @@
-import {GetServerSideProps, NextPage} from "next";
+import {type NextPage} from "next";
 import {api} from "~/utils/api";
-import {useRouter} from "next/router";
 import {useMemo, useState} from "react";
 import {RoomCard} from "~/components/roomCard";
 import {CircularProgress} from "~/components/circularProgress";
@@ -11,7 +10,7 @@ import {Paginator} from "~/components/paginator";
 const HotelRoomGallery:NextPage = ()=>{
     const [page, setPage] = useState(0);
     const [roomsPerPage, setRoomsPerPage] = useState(10);
-    const take = useMemo(()=> roomsPerPage, [page,roomsPerPage])
+    const take = useMemo(()=> roomsPerPage, [roomsPerPage])
     const skip = useMemo(()=> roomsPerPage * page, [page,roomsPerPage])
     const roomsCount = api.rooms.getCount.useQuery()
 

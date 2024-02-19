@@ -31,27 +31,27 @@ declare module 'next-auth' {
  */
 export const authOptions: NextAuthOptions = {
 	callbacks: {
-		jwt: ({ session, user, profile, account, isNewUser, trigger, token }) => {
+		jwt: ({ user, account, token }) => {
 			if (account) {
-				token.accessToken = account.access_token
-				token.id = account.providerAccountId ?? user?.id
-				token.role = (user as any)?.role ?? "GUEST"
+				token.accessToken = account.access_token;
+				token.id = account.providerAccountId ?? user?.id;
+				token.role = (user as any)?.role ?? 'GUEST';
 			}
 			return token;
 		},
-		session: ({ session, user, newSession, trigger, token }) => {
+		session: ({ session, token }) => {
 			// Send properties to the client, like an access_token and user id from a provider.
-			return ({
+			return {
 				...session,
 				user: {
 					...session.user,
 					id: token?.id,
 					role: token?.role,
 				},
-			})
+			};
 		},
 	},
-	pages:{
+	pages: {
 		signIn: routes.SignIn.route,
 	},
 	adapter: PrismaAdapter(db),
@@ -63,7 +63,7 @@ export const authOptions: NextAuthOptions = {
 				password: { label: 'Password', type: 'password' },
 			},
 			type: 'credentials',
-			async authorize(credentials, req) {
+			async authorize(credentials) {
 				// Add logic here to look up the user from the credentials supplied
 				if (!credentials) {
 					throw new TRPCError({ code: 'UNAUTHORIZED', message: 'invalid credentials' });

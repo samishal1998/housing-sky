@@ -1,5 +1,5 @@
 import {twMerge} from "tailwind-merge";
-import {ChangeEventHandler} from "react";
+import {type ChangeEventHandler} from "react";
 import {useField} from "formik";
 
 export const FormField = ({
@@ -58,7 +58,7 @@ export const FormikTextAreaField = ({
 	label: string;
 	name:string;
 } & React.ComponentProps<'textarea'>) => {
-	const [field, meta, helpers] = useField(props);
+	const [field, meta] = useField(props);
 	return (
 		<FormField label={label} {...field} {...props} error={meta.error}/>
 	);

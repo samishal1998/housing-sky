@@ -1,4 +1,4 @@
-import { NextPage } from 'next';
+import { type NextPage } from 'next';
 import { api } from '~/utils/api';
 import { useMemo, useState } from 'react';
 import { CircularProgress } from '~/components/circularProgress';

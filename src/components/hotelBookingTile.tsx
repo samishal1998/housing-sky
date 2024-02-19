@@ -1,4 +1,4 @@
-import { Booking, BookingStatus } from '.prisma/client';
+import { type Booking, BookingStatus } from '.prisma/client';
 import * as React from 'react';
 import { useCallback, useMemo } from 'react';
 import { Button } from '~/components/ui/button';
@@ -39,7 +39,7 @@ export function HotelBookingTile({ booking }: { booking: Booking }) {
 				toast('Failed to Update Booking', { important: true });
 			}
 		},
-		[updateBookingMut],
+		[booking.id, cancelBookingMut, queryClient, updateBookingMut],
 	);
 
 	return (

@@ -1,4 +1,4 @@
-import { NextPage } from 'next';
+import { type NextPage } from 'next';
 import { api } from '~/utils/api';
 import { useRouter } from 'next/router';
 import { z } from 'zod';
@@ -48,7 +48,7 @@ const CreateRoomDetails: NextPage = () => {
 				alert("Couldn't redirect");
 			});
 		}
-	}, [session.status]);
+	}, [router, session.status]);
 
 	const form = useFormik<CreateRoomFormValues>({
 		initialValues: {

@@ -1,8 +1,7 @@
-import { NextPage } from 'next';
+import { type NextPage } from 'next';
 import { api } from '~/utils/api';
 import { useRouter } from 'next/router';
 import { z } from 'zod';
-import { useSession } from 'next-auth/react';
 import { useMemo } from 'react';
 import { FormikProvider, useFormik } from 'formik';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
@@ -13,7 +12,7 @@ import { Button } from '~/components/ui/button';
 import { LoadingButton } from '~/components/loadingButton';
 import { EditRoomInput } from '~/server/api/routers/hotel/rooms/dtos/editRoomInput';
 import Layout from '~/components/layouts/layout';
-import { FormikFormSelectField, FormSelectField } from '~/components/forms/formSelectField';
+import { FormikFormSelectField } from '~/components/forms/formSelectField';
 import { FormPhotoField } from '~/components/forms/formPhotoInput';
 import { CircularProgress } from '~/components/circularProgress';
 import { fileToBase64 } from '~/utils/fileToBase64';
@@ -22,24 +21,28 @@ import { isCuid } from '@paralleldrive/cuid2';
 import { getPublicImageUrlFromPath } from '~/utils/storage-helpers';
 
 const EditRoomFormSchema = EditRoomInput.extend({
-	images: z.any().array().min(1).describe('Images List').refine((arg) => {
-		let totalSize = 0;
-		for (const file of arg) {
-			if (file instanceof File) {
-				totalSize += file.size;
+	images: z
+		.union(
+			[z.string(), z.instanceof(File)]
+		)
+		.array()
+		.min(1)
+		.refine((arg) => {
+			let totalSize = 0;
+			for (const file of arg) {
+				if (file instanceof File) {
+					totalSize += file.size;
+				}
 			}
-		}
 
-		return totalSize < 3000_000;
-	}, 'Maximum Upload Size Reached'),
+			return totalSize < 3000_000;
+		}, 'Maximum Upload Size Reached'),
 });
 type EditRoomFormValues = z.infer<typeof EditRoomFormSchema>;
 
 const EditRoomDetails: NextPage = () => {
 	const query = useRouter().query;
 
-	const router = useRouter();
-	const session = useSession();
 	const editRoomMutation = api.hotels.rooms.edit.useMutation();
 	const roomDetailsQuery = api.hotels.rooms.get.useQuery({ roomId: query.id as string });
 	const roomDetails = useMemo(() => roomDetailsQuery.data?.room, [roomDetailsQuery]);
@@ -57,7 +60,7 @@ const EditRoomDetails: NextPage = () => {
 			images: roomDetails?.images ?? [],
 		},enableReinitialize:true,
 		validationSchema: toFormikValidationSchema(EditRoomFormSchema),
-		async onSubmit(values, helpers) {
+		async onSubmit(values) {
 			try {
 				const images: string[] = [];
 				for (const image of values.images ?? []) {
