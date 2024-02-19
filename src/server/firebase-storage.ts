@@ -1,7 +1,5 @@
 import {initializeApp, cert, type App} from 'firebase-admin/app';
 import { getStorage } from 'firebase-admin/storage';
-import serviceAccount from '~/../config/housing-sky-firebase-adminsdk-lg130-296b0c1d13.json';
-
 import { env } from "~/env";
 
 const globalForFirebase = globalThis as unknown as {
@@ -11,13 +9,13 @@ const globalForFirebase = globalThis as unknown as {
 export const firebaseApp =
 	globalForFirebase.firebaseApp ?? initializeApp({
 		credential: cert({
-			privateKey: serviceAccount.private_key,
-			clientEmail: serviceAccount.client_email,
-			projectId: serviceAccount.project_id,
+			privateKey: env.FIREBASE_PRIVATE_KEY,
+			clientEmail: env.FIREBASE_CLIENT_EMAIL,
+			projectId: env.FIREBASE_PROJECT_ID,
 		}),
-		serviceAccountId: serviceAccount.client_id,
-		projectId: serviceAccount.project_id,
-		storageBucket: 'gs://housing-sky.appspot.com',
+		serviceAccountId: env.FIREBASE_CLIENT_ID,
+		projectId: env.FIREBASE_PROJECT_ID,
+		storageBucket: `gs://${env.NEXT_PUBLIC_STORAGE_BUCKET}`,
 	});
 
 if (env.NODE_ENV !== "production") globalForFirebase.firebaseApp = firebaseApp
