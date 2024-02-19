@@ -11,6 +11,8 @@ import { LoadingButton } from '~/components/loadingButton';
 import { FormikTextAreaField } from '~/components/forms/formTextAreaField';
 import Link from 'next/link';
 import { routes } from '~/routes/router';
+import {useRouter} from "next/router";
+import {useEffect} from "react";
 
 const RegisterHotelFormSchema = RegisterHotelInput.extend({
 	repeatPassword: z.string(),
@@ -18,8 +20,16 @@ const RegisterHotelFormSchema = RegisterHotelInput.extend({
 type RegisterHotelFormValues = z.infer<typeof RegisterHotelFormSchema>;
 export default function HotelRegistration() {
 	const session = useSession();
+	const router = useRouter()
 	const registerHotelMutation = api.hotels.register.useMutation();
 
+	useEffect(() => {
+		if (session.status === 'authenticated') {
+			router.replace('/').catch(() => {
+				alert("Couldn't redirect");
+			});
+		}
+	}, [router, session.status]);
 	const form = useFormik<RegisterHotelFormValues>({
 		initialValues: {
 			name: '',
@@ -35,6 +45,7 @@ export default function HotelRegistration() {
 				await registerHotelMutation.mutateAsync(values);
 				toast('Registered Successfully', { important: true });
 				await signIn("credentials",values)
+				setTimeout(()=> {router.replace('/').catch(console.error)},2000)
 
 			} catch (e) {
 				console.log(e);
