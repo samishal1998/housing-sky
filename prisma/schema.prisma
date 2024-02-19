@@ -28,10 +28,9 @@ enum BookingStatus {
 }
 
 model Booking {
-  id   String @id @default(cuid())
-  name String
+  id String @id @default(cuid())
 
-  status    BookingStatus
+  status    BookingStatus @default(PENDING_RESPONSE)
   startDate DateTime
   endDate   DateTime
 
@@ -45,8 +44,8 @@ model Booking {
   roomId    String
   room      Room     @relation(fields: [roomId], references: [id])
 
-  acceptedBy   HotelManager @relation(fields: [acceptedById], references: [id])
-  acceptedById String
+  closedBy   HotelManager? @relation(fields: [closedById], references: [id])
+  closedById String?
 
   createdBy   User   @relation(fields: [createdById], references: [id])
   createdById String
@@ -59,13 +58,14 @@ model Room {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  floor       Int
-  space       String
-  description String?
-  images      String[]
-  type        RoomType
-
-  pricePerDay Float
+  isActive      Boolean  @default(true)
+  floor         Int
+  space         String
+  description   String?
+  images        String[]
+  type          RoomType
+  vatPercentage Int
+  pricePerDay   Float
 
   hotelId  String
   hotel    Hotel     @relation(references: [id], fields: [hotelId])
@@ -80,17 +80,15 @@ model Room {
 model Hotel {
   id         String @id @default(cuid())
   name       String
-  starRating Int
+  starRating Int?
   address    String
-  location   Json
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   description String?
-  images      String[]
 
-  rooms        Room[]         @relation()
+  rooms         Room[]         @relation()
   hotelManagers HotelManager[]
 
   @@index([name])
@@ -100,22 +98,10 @@ model HotelManager {
   id             String    @id @default(cuid())
   hotel          Hotel     @relation(references: [id], fields: [hotelId])
   user           User      @relation(references: [id], fields: [userId])
-  userId         String
+  userId         String    @unique
   hotelId        String
   closedBookings Booking[]
   roomsCreated   Room[]
-}
-
-model Post {
-  id        Int      @id @default(autoincrement())
-  name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  createdBy   User   @relation(fields: [createdById], references: [id])
-  createdById String
-
-  @@index([name])
 }
 
 // Necessary for Next auth
@@ -146,16 +132,22 @@ model Session {
 }
 
 model User {
-  id                String         @id @default(cuid())
+  id                String        @id @default(cuid())
   name              String?
-  email             String?        @unique
+  email             String?       @unique
+  passwordHash      String?
   emailVerified     DateTime?
   image             String?
   accounts          Account[]
   sessions          Session[]
-  posts             Post[]
   submittedBookings Booking[]
-  hotelsAccess      HotelManager[]
+  hotelAccess       HotelManager?
+  role              UserRole      @default(GUEST)
+}
+
+enum UserRole {
+  GUEST
+  HOTEL_MANAGER
 }
 
 model VerificationToken {
