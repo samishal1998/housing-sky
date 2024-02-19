@@ -80,8 +80,8 @@ export default function HotelRegistration() {
 
                                 <FormikFormField label={'User Name'} name={'name'} />
                                 <FormikFormField label={'Email'} name={'email'} />
-                                <FormikFormField label={'Password'} name={'password'} />
-                                <FormikFormField label={'Repeat Password'} name={'repeatPassword'} />
+                                <FormikFormField label={'Password'} name={'password'} type={'password'}/>
+                                <FormikFormField label={'Repeat Password'} name={'repeatPassword'} type={'password'}/>
 
                                 <div>
                                     <Button asChild>

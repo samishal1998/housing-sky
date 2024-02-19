@@ -67,8 +67,8 @@ export default function HotelRegistration() {
 						<form className="space-y-5">
 							<FormikFormField label={'User Name'} name={'username'} />
 							<FormikFormField label={'User Email'} name={'email'} />
-							<FormikFormField label={'Password'} name={'password'} />
-							<FormikFormField label={'Repeat Password'} name={'repeatPassword'} />
+							<FormikFormField label={'Password'} name={'password'} type={'password'} />
+							<FormikFormField label={'Repeat Password'} name={'repeatPassword'} type={'password'}/>
 							<div className={'flex flex-row items-center justify-center w-full gap-2'}>
 								<div className={'flex-1 bg-primary/40 h-0.5 rounded-full '}></div>
 								<div className={'text-primary/50 font-semibold text-lg'}>Hotel Details</div>
