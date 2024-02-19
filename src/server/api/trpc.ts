@@ -15,6 +15,9 @@ import { ZodError } from "zod";
 
 import { getServerAuthSession } from "~/server/auth";
 import { db } from "~/server/db";
+import {firebaseApp} from "~/server/firebase-storage";
+import {assert} from "~/utils/assert";
+import {type Hotel, type HotelManager} from "@prisma/client";
 
 /**
  * 1. CONTEXT
@@ -42,8 +45,13 @@ const createInnerTRPCContext = (opts: CreateContextOptions) => {
   return {
     session: opts.session,
     db,
+    firebaseApp
   };
 };
+
+export type TRPCContext = Awaited<ReturnType<typeof createTRPCContext>>;
+
+
 
 /**
  * This is the actual context you will use in your router. It will be used to process every request
@@ -123,6 +131,34 @@ export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
     ctx: {
       // infers the `session` as non-nullable
       session: { ...ctx.session, user: ctx.session.user },
+    },
+  });
+});
+export const hotelManagerProcedure = protectedProcedure.use(async({ ctx, next }) => {
+
+  const user = await ctx.db.user.findUnique({
+    where: {
+      id: ctx.session.user.id,
+    },
+    include: {
+      hotelAccess: {
+        include: {
+          hotel: true,
+        },
+      },
+    },
+  });
+  assert(user, 'user-not-found', 'NOT_FOUND');
+
+  const hotelManager: HotelManager = user?.hotelAccess as any;
+  assert(hotelManager, 'user-not-associated-with-hotel');
+
+  const hotel: Hotel = (hotelManager as any)?.hotel;
+  return next({
+    ctx: {
+        hotel,
+      hotelManager,
+      user,
     },
   });
 });
