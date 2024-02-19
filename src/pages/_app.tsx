@@ -5,6 +5,7 @@ import { type AppType } from 'next/app';
 import { api } from '~/utils/api';
 
 import '~/styles/globals.css';
+import { Toaster } from 'sonner';
 import Head from 'next/head';
 import colors from "tailwindcss/colors";
 import NextNProgress from 'nextjs-progressbar';
@@ -41,6 +42,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
 				<meta name="theme-color" content="#ffffff" />
 			</Head>
 			<SessionProvider session={session}>
+				<Toaster />
 				<Component {...pageProps} />
 				<NextNProgress
 					color={colors.amber[500]}
