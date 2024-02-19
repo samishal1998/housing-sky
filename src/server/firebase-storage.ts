@@ -9,7 +9,7 @@ const globalForFirebase = globalThis as unknown as {
 export const firebaseApp =
 	globalForFirebase.firebaseApp ?? initializeApp({
 		credential: cert({
-			privateKey: env.FIREBASE_PRIVATE_KEY,
+			privateKey: env.FIREBASE_PRIVATE_KEY.replaceAll('\\n','\n'),
 			clientEmail: env.FIREBASE_CLIENT_EMAIL,
 			projectId: env.FIREBASE_PROJECT_ID,
 		}),
