@@ -57,6 +57,7 @@ export const hotelsRouter = createTRPCRouter({
 								name: username ?? name,
 								email,
 								passwordHash: sha1(password),
+								role:'HOTEL_MANAGER'
 							},
 						},
 					},
@@ -96,7 +97,7 @@ export const hotelsRouter = createTRPCRouter({
 					name,
 					hotelManagers: {
 						create: {
-							user: { create: { id: user!.id } },
+							user: { create: { id: user!.id } ,role:'HOTEL_MANAGER'},
 						},
 					},
 				},
