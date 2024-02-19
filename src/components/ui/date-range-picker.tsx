@@ -10,7 +10,7 @@ import { Button } from '~/components/ui/button';
 import { Calendar } from '~/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '~/components/ui/popover';
 import { toast } from 'sonner';
-import { checkIfRangeOverlapsMatchers } from '~/helpers/check-if-range-overlaps-matchers';
+import { checkIfDateRangeOverlapsMatchers } from '~/utils/dates';
 
 export function DatePickerWithRange({
 	date,
@@ -59,7 +59,7 @@ export function DatePickerWithRange({
 							if (
 								disabled &&
 								range &&
-								checkIfRangeOverlapsMatchers(disabled, range)
+								checkIfDateRangeOverlapsMatchers(disabled, range)
 							) {
 								toast(
 									<>

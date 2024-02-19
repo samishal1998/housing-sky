@@ -1,7 +1,7 @@
-import {DateRange, Matcher} from 'react-day-picker';
-import {areIntervalsOverlapping, Interval} from 'date-fns';
+import {type DateRange, type Matcher} from 'react-day-picker';
+import {areIntervalsOverlapping, type Interval} from 'date-fns';
 
-export function checkIfRangeOverlapsMatchers(matchers: Matcher[], range: DateRange) {
+export function checkIfDateRangeOverlapsMatchers(matchers: Matcher[], range: DateRange) {
     if (!(range.to && range.from)) return false;
 
     for (const matcher of matchers) {
