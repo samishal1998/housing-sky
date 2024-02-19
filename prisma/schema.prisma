@@ -39,12 +39,12 @@ model Booking {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   roomId    String
-  room      Room     @relation(fields: [roomId], references: [id])
+  room      Room     @relation("booked-room", fields: [roomId], references: [id])
 
   closedBy   HotelManager? @relation(fields: [closedById], references: [id])
   closedById String?
 
-  createdBy   User   @relation(fields: [createdById], references: [id])
+  createdBy   User   @relation("booking-guest", fields: [createdById], references: [id])
   createdById String
 }
 
@@ -65,8 +65,8 @@ model Room {
   pricePerDay   Float
 
   hotelId  String
-  hotel    Hotel     @relation(references: [id], fields: [hotelId])
-  bookings Booking[]
+  hotel    Hotel     @relation("hotel-rooms", references: [id], fields: [hotelId])
+  bookings Booking[] @relation("booked-room")
 
   createdBy   HotelManager @relation(fields: [createdById], references: [id])
   createdById String
@@ -85,16 +85,16 @@ model Hotel {
 
   description String?
 
-  rooms         Room[]         @relation()
-  hotelManagers HotelManager[]
+  rooms         Room[]         @relation("hotel-rooms")
+  hotelManagers HotelManager[] @relation("hotel-managers")
 
   @@index([name])
 }
 
 model HotelManager {
   id             String    @id @default(cuid())
-  hotel          Hotel     @relation(references: [id], fields: [hotelId])
-  user           User      @relation(references: [id], fields: [userId])
+  hotel          Hotel     @relation("hotel-managers", references: [id], fields: [hotelId])
+  user           User      @relation("hotel-access", references: [id], fields: [userId])
   userId         String    @unique
   hotelId        String
   closedBookings Booking[]
@@ -115,7 +115,7 @@ model Account {
   scope             String?
   id_token          String? // @db.Text
   session_state     String?
-  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation("user-accounts", fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -125,7 +125,7 @@ model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User     @relation("user-sessions", fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model User {
@@ -135,10 +135,10 @@ model User {
   passwordHash      String?
   emailVerified     DateTime?
   image             String?
-  accounts          Account[]
-  sessions          Session[]
-  submittedBookings Booking[]
-  hotelAccess       HotelManager?
+  accounts          Account[]     @relation("user-accounts")
+  sessions          Session[]     @relation("user-sessions")
+  submittedBookings Booking[]     @relation("booking-guest")
+  hotelAccess       HotelManager? @relation("hotel-access")
   role              UserRole      @default(GUEST)
 }
 
