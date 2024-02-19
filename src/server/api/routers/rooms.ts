@@ -6,7 +6,7 @@ const GetRoomsInput = z.object({
 	skip: z.number(),
 	take: z.number(),
 });
-const GetRoomInput = z.object({ roomId: z.string() })
+const GetRoomInput = z.object({ roomId: z.string() });
 export const roomsRouter = createTRPCRouter({
 	getCount: publicProcedure.query(async ({ ctx }) => {
 		const count = await ctx.db.room.count({ where: { isActive: true } });
@@ -39,30 +39,55 @@ export const roomsRouter = createTRPCRouter({
 	}),
 
 	getRoomWithBookedDates: publicProcedure.input(GetRoomInput).query(async ({ ctx, input }) => {
-			const currentDate = new Date();
-			const room = await ctx.db.room.findUniqueOrThrow({
-				where: {
-					id: input.roomId,
-				},
-				include: {
-					bookings: {
-						where: {
-							status: { in: ['ACCEPTED', 'PENDING_RESPONSE'] },
-							OR: [
-								{
-									startDate: { gte: currentDate },
-								},
-								{
-									endDate: { gte: currentDate },
-								},
-							],
-						},
+		const currentDate = new Date();
+		const room = await ctx.db.room.findUniqueOrThrow({
+			where: {
+				id: input.roomId,
+			},
+			include: {
+				bookings: {
+					where: {
+						status: { in: ['ACCEPTED', 'PENDING_RESPONSE'] },
+						OR: [
+							{
+								startDate: { gte: currentDate },
+							},
+							{
+								endDate: { gte: currentDate },
+							},
+						],
 					},
 				},
-			});
+			},
+		});
 
-			return {
-				room,
-			};
-		}),
+		return {
+			room,
+		};
+	}),
+	getRoomBookedDates: publicProcedure.input(GetRoomInput).query(async ({ ctx, input }) => {
+		const currentDate = new Date();
+		const bookings = await ctx.db.booking.findMany({
+			where: {
+				roomId: input.roomId,
+				status: { in: ['ACCEPTED', 'PENDING_RESPONSE'] },
+				OR: [
+					{
+						startDate: { gte: currentDate },
+					},
+					{
+						endDate: { gte: currentDate },
+					},
+				],
+			},
+			select: {
+				startDate: true,
+				endDate: true,
+			},
+		});
+
+		return {
+			bookings,
+		};
+	}),
 });

@@ -97,7 +97,7 @@ export const hotelsRouter = createTRPCRouter({
 					name,
 					hotelManagers: {
 						create: {
-							user: { create: { id: user!.id } ,role:'HOTEL_MANAGER'},
+							user: { create: { id: user!.id ,role:'HOTEL_MANAGER'} ,},
 						},
 					},
 				},

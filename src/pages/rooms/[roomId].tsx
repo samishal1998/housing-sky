@@ -37,10 +37,11 @@ type CreateBookingFormValues = Partial<
 const RoomDetails: NextPage = () => {
 	const router = useRouter();
 	const query = router.query;
-	const roomBookedDatesQuery = api.rooms.getRoomWithBookedDates.useQuery({
+	const roomQuery = api.rooms.get.useQuery({
 		roomId: query.roomId as string,
 	});
-	const room = useMemo(() => roomBookedDatesQuery.data?.room, [roomBookedDatesQuery]);
+
+	const room = useMemo(() => roomQuery.data?.room, [roomQuery]);
 
 	return (
 		<Layout>
@@ -76,7 +77,7 @@ const RoomDetails: NextPage = () => {
 								<div><span className={'font-semibold text-neutral-500'}>Room Type</span> {room.type}</div>
 							</div>
 						</div>
-						<BookRoomForm room={room} />
+						<BookRoomForm room={room}  />
 					</div>
 				</>
 			)}
@@ -85,19 +86,24 @@ const RoomDetails: NextPage = () => {
 };
 export default RoomDetails;
 
-const BookRoomForm = ({ room }: { room: Room & { bookings: Booking[] } }) => {
+const BookRoomForm = ({ room }: { room: Room  }) => {
 	const session = useSession();
 	const router = useRouter();
-
+	const roomBookedDatesQuery = api.rooms.getRoomBookedDates.useQuery({
+		roomId: router.query.roomId as string,
+	});
+	const bookings = useMemo(() => {
+		return roomBookedDatesQuery.data?.bookings
+	}, [roomBookedDatesQuery]);
 	const disabledDates: Matcher[] = useMemo(() => {
 		const dates: Matcher[] = [{ before: new Date() }];
-		if (room) {
-			room.bookings.forEach(({ startDate: from, endDate: to }) => {
+		if (bookings) {
+			bookings.forEach(({ startDate: from, endDate: to }) => {
 				dates.push({ from, to });
 			});
 		}
 		return dates;
-	}, [room]);
+	}, [bookings]);
 	const bookRoomMutation = api.guest.bookings.create.useMutation();
 
 	const form = useFormik<CreateBookingFormValues>({
