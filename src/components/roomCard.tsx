@@ -9,7 +9,6 @@ import {
 	DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu';
 import Link from 'next/link';
-import Image from 'next/image';
 import { Button } from '~/components/ui/button';
 import { MoreVerticalIcon, PencilIcon, TrashIcon } from 'lucide-react';
 import { api } from '~/utils/api';
@@ -28,7 +27,7 @@ export function RoomCard({ room, showControls }: { room: Room; showControls?: bo
 				}
 				href={routes.RoomDetails.generatePath(room)}>
 				{room.images[0] && (
-					<Image
+					<img
 						className={cn('mx-auto aspect-square w-[95%] rounded-2xl object-cover')}
 						src={getPublicImageUrlFromPath(room.images[0])}
 						alt={`${room.name}-image`}

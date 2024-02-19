@@ -18,7 +18,6 @@ import type { UserRole } from '@prisma/client';
 import { cn } from '~/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
 import { getPublicImageUrlFromPath } from '~/utils/storage-helpers';
-import Image from 'next/image';
 import { DefaultMenuBar } from '~/components/layouts/defaultMenuBar';
 import { GuestMenuBar } from '~/components/layouts/guestMenuBar';
 import { HotelManagerMenuBar } from '~/components/layouts/hotelManagerMenuBar';
@@ -69,7 +68,7 @@ const Layout = ({
 							' !leading-normal md:text-2xl ',
 						)}>
 						<Link href={'/'}>
-							<Image
+							<img
 								alt={'logo'}
 								src={'/housing-sky-logo-big-side-text.svg'}
 								className={' max-w-[10rem] '}

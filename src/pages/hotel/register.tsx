@@ -10,7 +10,6 @@ import { Button } from '~/components/ui/button';
 import { LoadingButton } from '~/components/loadingButton';
 import { FormikTextAreaField } from '~/components/forms/formTextAreaField';
 import Link from 'next/link';
-import Image from 'next/image';
 import { routes } from '~/routes/router';
 
 const RegisterHotelFormSchema = RegisterHotelInput.extend({
@@ -53,7 +52,7 @@ export default function HotelRegistration() {
 		<>
 			<div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
 				<Link href="/" className="block sm:mx-auto sm:w-full sm:max-w-sm">
-					<Image
+					<img
 						className="mx-auto h-40 w-auto"
 						src="/housing-sky-logo.svg"
 						alt="Housing Sky"
