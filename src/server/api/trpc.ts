@@ -135,7 +135,10 @@ export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
   });
 });
 export const hotelManagerProcedure = protectedProcedure.use(async({ ctx, next }) => {
+  //TOKEN BASED ASSERTION
+  assert(ctx.session.user.role === 'HOTEL_MANAGER', 'User not a hotel manager', 'FORBIDDEN');
 
+  //RE-ASSERTION from database in case access has been revoked and token is not updated.
   const user = await ctx.db.user.findUnique({
     where: {
       id: ctx.session.user.id,
@@ -148,12 +151,13 @@ export const hotelManagerProcedure = protectedProcedure.use(async({ ctx, next })
       },
     },
   });
-  assert(user, 'user-not-found', 'NOT_FOUND');
+  assert(user, 'user not found', 'NOT_FOUND');
 
   const hotelManager: HotelManager = user?.hotelAccess as any;
-  assert(hotelManager, 'user-not-associated-with-hotel');
+  assert(hotelManager, 'user no longer associated with a hotel');
 
   const hotel: Hotel = (hotelManager as any)?.hotel;
+
   return next({
     ctx: {
         hotel,
