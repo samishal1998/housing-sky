@@ -41,7 +41,7 @@ model Booking {
   roomId    String
   room      Room     @relation("booked-room", fields: [roomId], references: [id])
 
-  closedBy   HotelManager? @relation(fields: [closedById], references: [id])
+  closedBy   HotelManager? @relation("closed-bookings", fields: [closedById], references: [id])
   closedById String?
 
   createdBy   User   @relation("booking-guest", fields: [createdById], references: [id])
@@ -68,7 +68,7 @@ model Room {
   hotel    Hotel     @relation("hotel-rooms", references: [id], fields: [hotelId])
   bookings Booking[] @relation("booked-room")
 
-  createdBy   HotelManager @relation(fields: [createdById], references: [id])
+  createdBy   HotelManager @relation("room-creator", fields: [createdById], references: [id])
   createdById String
 
   @@index([name])
@@ -97,8 +97,8 @@ model HotelManager {
   user           User      @relation("hotel-access", references: [id], fields: [userId])
   userId         String    @unique
   hotelId        String
-  closedBookings Booking[]
-  roomsCreated   Room[]
+  closedBookings Booking[] @relation("closed-bookings")
+  roomsCreated   Room[]    @relation("room-creator")
 }
 
 // Necessary for Next auth
