@@ -6,6 +6,8 @@ import { api } from '~/utils/api';
 
 import '~/styles/globals.css';
 import Head from 'next/head';
+import colors from "tailwindcss/colors";
+import NextNProgress from 'nextjs-progressbar';
 
 const MyApp: AppType<{ session: Session | null }> = ({
 	Component,
@@ -40,6 +42,10 @@ const MyApp: AppType<{ session: Session | null }> = ({
 			</Head>
 			<SessionProvider session={session}>
 				<Component {...pageProps} />
+				<NextNProgress
+					color={colors.amber[500]}
+					showOnShallow={true}
+				/>
 			</SessionProvider>
 		</>
 	);
