@@ -39,7 +39,7 @@ export default function HotelRegistration() {
             name: user?.name ?? undefined,
             email: user?.email ?? undefined,
             image:undefined,
-        },
+        },enableReinitialize:true,
         validationSchema: toFormikValidationSchema(UpdateHotelFormSchema),
         async onSubmit(values) {
             try {

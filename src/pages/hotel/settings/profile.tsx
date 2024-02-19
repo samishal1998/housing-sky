@@ -32,6 +32,7 @@ export default function HotelRegistration() {
 			address: hotelQuery.data?.address,
 			description: hotelQuery.data?.description ?? '',
 		},
+		enableReinitialize:true,
 		validationSchema: toFormikValidationSchema(UpdateHotelFormSchema),
 		async onSubmit(values) {
 			try {
