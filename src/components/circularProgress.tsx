@@ -10,7 +10,7 @@ export type CircularProgressProps = {
 export function CircularProgress({ width = 36, height = 36, className }: CircularProgressProps) {
 	return (
 		<LoaderIcon
-			className={twMerge('animate-spin dark:text-primary-300 text-primary-600', className)}
+			className={twMerge('animate-spin text-primary', className)}
 			width={width}
 			height={height}
 		/>

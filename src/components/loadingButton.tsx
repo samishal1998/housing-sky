@@ -26,10 +26,10 @@ export const LoadingButton = ({
             {loading ? (
                 <div ref={parent} className={'flex flex-row justify-center flex-nowrap items-center gap-3'}>
                     <CircularProgress
+                        className={'text-foreground'}
                         width={height ? 0.6 * height : '1em'}
                         height={height ? 0.6 * height : '1em'}
                         {...(circularProgressProps ?? {})}
-                        color={'white'}
                     />
 
                     {loadingLabel}
